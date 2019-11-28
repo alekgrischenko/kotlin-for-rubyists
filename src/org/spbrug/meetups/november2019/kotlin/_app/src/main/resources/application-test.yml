@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: test
+  jpa:
+    show-sql: false
+  datasource:
+    url: jdbc:postgresql://talent-vacancies-postgres:5432/talent_vacancies_test
+    username: openbank
+    password: openbank

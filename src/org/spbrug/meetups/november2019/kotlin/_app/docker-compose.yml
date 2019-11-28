@@ -1,0 +1,45 @@
+version: '3.7'
+
+services:
+  x-base: &base
+    image: alpine:latest
+    restart: on-failure
+    stdin_open: true
+    tty: true
+    logging:
+      options:
+        max-size: ${MAX_LOG_SIZE:-10m}
+
+  db:
+    <<: *base
+    image: postgres:12-alpine
+    container_name: bookstore-postgres
+    hostname: bookstore-postgres
+    env_file:
+      - .docker/postgres/.env
+    volumes:
+      - .docker/postgres/.psqlrc:/root/.psqlrc:ro
+      - postgres_data
+    ports:
+      - '127.0.0.1:6432:5432'
+
+  app-dev:
+    <<: *base
+    image: ${JDK_VERSION}
+    working_dir: ${APP_HOME}
+    command: ["gradle", "bootRun"]
+    container_name: bookstore-app
+    env_file:
+      - .docker/app/.env
+    environment:
+      SERVER_PORT: ${APP_PORT}
+    depends_on:
+      - db
+    ports:
+      - '127.0.0.1:10080:${APP_PORT}'
+    volumes:
+      - .:${APP_HOME}:cached
+
+volumes:
+  postgres_data:
+    driver: local

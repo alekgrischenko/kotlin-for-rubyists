@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: talent-vacancies
+  datasource:
+    platform: postgres
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      connection-timeout: 10000
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: none
+    generate-ddl: false
+
+  liquibase:
+    url: ${SPRING_DATASOURCE_URL}
+    user: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+
+---
+spring:
+  profiles:
+    active: dev
+  jpa:
+    show-sql: true
+
+---
+spring:
+  profiles:
+    active: prod
+  jpa:
+    show-sql: false
